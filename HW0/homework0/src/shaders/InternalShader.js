@@ -142,7 +142,5 @@ void main(void) {
   
   gl_FragColor = vec4(pow((ambient + diffuse + specular), vec3(1.0/2.2)), 1.0);
 
-  gl_FragColor = vec4(1.0,1.0,0.0,1.0);
-
 }
 `;
