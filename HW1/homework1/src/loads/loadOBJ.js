@@ -80,7 +80,9 @@ class ObjectLoader
 						colorMap.CreateConstantTexture(renderer.gl, mat.color.toArray());
 					}
 
-					let material, shadowMaterial;
+					let material = null;
+					let shadowMaterial = null;
+
 					let Translation = [transform.modelTransX, transform.modelTransY, transform.modelTransZ];
 					let Scale = [transform.modelScaleX, transform.modelScaleY, transform.modelScaleZ];
 
@@ -90,22 +92,35 @@ class ObjectLoader
 							material = buildPhongMaterial(colorMap, mat.specular.toArray(), light, Translation, Scale, "./src/shaders/phongShader/phongVertex.glsl", "./src/shaders/phongShader/phongFragment.glsl");
 							shadowMaterial = buildShadowMaterial(light, Translation, Scale, "./src/shaders/shadowShader/shadowVertex.glsl", "./src/shaders/shadowShader/shadowFragment.glsl");
 							break;
+						case 'ShadowMapTestMaterial':
+							material = buildPhongMaterial(
+									colorMap, 
+									mat.specular.toArray(), 
+									light, 
+									Translation, 
+									Scale, 
+									"./src/shaders/phongShader/shadowMapTestVert.glsl", 
+									"./src/shaders/phongShader/shadowMapTestFrag.glsl");
+							break;
 					}
-
-					material.then((data) => {
-						let meshRender = new MeshRender(renderer.gl, mesh, data);
-						renderer.addMeshRender(meshRender);
-					});
-					shadowMaterial.then((data) => {
-						let shadowMeshRender = new MeshRender(renderer.gl, mesh, data);
-						renderer.addShadowMeshRender(shadowMeshRender);
-					});
+					
+					if(material != null)
+					{
+						material.then((data) => {
+							let meshRender = new MeshRender(renderer.gl, mesh, data);
+							renderer.addMeshRender(meshRender);
+						});
+					}
+					
+					if(shadowMaterial != null)
+					{
+						shadowMaterial.then((data) => {
+							let shadowMeshRender = new MeshRender(renderer.gl, mesh, data);
+							renderer.addShadowMeshRender(shadowMeshRender);
+						});
+					}
+					
 				}
 			});
 		}
-
 }
-
-
-
-

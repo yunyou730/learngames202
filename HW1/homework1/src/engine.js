@@ -63,6 +63,7 @@ function GAMES202Main() {
 	new ObjectLoader(0).load(renderer,"assets/mary/","Marry","PhongMaterial",obj1Transform);
 	new ObjectLoader(1).load(renderer,"assets/mary/","Marry","PhongMaterial",obj2Transform);
 	new ObjectLoader(2).load(renderer,"assets/floor/","floor","PhongMaterial",floorTransform);
+	//new ObjectLoader(3).load(renderer,"assets/floor/","floor","ShadowMapTestMaterial",floorTransform);
 	
 
 	// let floorTransform = setTransform(0, 0, 0, 100, 100, 100);

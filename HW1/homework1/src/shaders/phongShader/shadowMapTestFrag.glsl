@@ -105,11 +105,7 @@ float PCSS(sampler2D shadowMap, vec4 coords){
 
 
 float useShadowMap(sampler2D shadowMap, vec4 shadowCoord){
-  vec4 shadowMapCol = texture2D(shadowMap,shadowCoord.xy);
-  float lightDepth = unpack(shadowMapCol);
-  //float lightDepth = shadowMapCol.a;
-  float shadingDepth = shadowCoord.z;
-  return lightDepth + EPS <= shadingDepth ? 0.0 : 1.0;
+  return 1.0;
 }
 
 vec3 blinnPhong() {
@@ -137,16 +133,19 @@ vec3 blinnPhong() {
 
 void main(void) {
 
-  vec3 shadowCoord = vPositionFromLight.xyz / vPositionFromLight.w; // remap [-w,+w] to [-1,+1]
-  shadowCoord.xyz = shadowCoord.xyz * 0.5 + 0.5;    // remap [-1,1] to [0,1]
+  float visibility;
+  //visibility = useShadowMap(uShadowMap, vec4(shadowCoord, 1.0));
+  //visibility = PCF(uShadowMap, vec4(shadowCoord, 1.0));
+  //visibility = PCSS(uShadowMap, vec4(shadowCoord, 1.0));
 
-  float visibility = 1.0;
-  visibility = useShadowMap(uShadowMap, vec4(shadowCoord, 1.0));
-  // //visibility = PCF(uShadowMap, vec4(shadowCoord, 1.0));
-  // //visibility = PCSS(uShadowMap, vec4(shadowCoord, 1.0));
+  vec3 phongColor = blinnPhong();
 
-   vec3 phongColor = blinnPhong();
+  //gl_FragColor = vec4(phongColor * visibility, 1.0);
+  gl_FragColor = vec4(phongColor, 1.0);
 
-  gl_FragColor = vec4(phongColor * visibility, 1.0);
-  //gl_FragColor = vec4(phongColor, 1.0);
+
+  // test output shadowmap
+  vec2 uv = vTextureCoord;
+  vec3 color = texture2D(uShadowMap, uv).rgb;
+  gl_FragColor = vec4(color,1.0);
 }
