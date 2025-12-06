@@ -29,7 +29,14 @@ class DirectionalLight {
         mat4.lookAt(viewMatrix,this.lightPos,this.focalPoint,this.lightUp);
     
         // Projection transform
-        mat4.ortho(projectionMatrix,-100,100,-100,100,0.1,500); // shadowmap 的形状是正方形, 这里也简化 ortho 的范围 widht,height 都一样
+        // var r = 100;  
+        // var l = -r;  
+        // var t = 100;  
+        // var b = -t;  
+        // var n = 0.01;  
+        // var f = 200;  
+        // mat4.ortho(projectionMatrix, l, r, b, t, n, f);              
+        mat4.ortho(projectionMatrix,-100,100,-100,100,0.1,400.0); // shadowmap 的形状是正方形, 这里也简化 ortho 的范围 widht,height 都一样
 
         mat4.multiply(lightMVP, projectionMatrix, viewMatrix);
         mat4.multiply(lightMVP, lightMVP, modelMatrix);

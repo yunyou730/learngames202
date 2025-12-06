@@ -103,13 +103,31 @@ float PCSS(sampler2D shadowMap, vec4 coords){
 
 }
 
+// //phongFragment.glsl
+// #define SHADOW_MAP_SIZE 2048.0  // 和 shadowmap 的 分辨率相关
+// #define FRUSTUM_SIZE  400.0     // 和 light 的 projection 矩阵里的 near far 距离相关
+// float getShadowBias(float c, float filterRadiusUV){
+//   vec3 normal = normalize(vNormal);
+//   vec3 lightDir = normalize(uLightPos - vFragPos);
+//   float fragSize = (1. + ceil(filterRadiusUV)) * (FRUSTUM_SIZE / SHADOW_MAP_SIZE / 2.);
+//   return max(fragSize, fragSize * (1.0 - dot(normal, lightDir))) * c;
+//   float v = fragSize * (1.0 - dot(normal, lightDir)) * c;
+//   return v;
+// }
+
 
 float useShadowMap(sampler2D shadowMap, vec4 shadowCoord){
-  vec4 shadowMapCol = texture2D(shadowMap,shadowCoord.xy);
-  float lightDepth = unpack(shadowMapCol);
-  //float lightDepth = shadowMapCol.a;
-  float shadingDepth = shadowCoord.z;
-  return lightDepth + EPS <= shadingDepth ? 0.0 : 1.0;
+  // 从 shadowmap 里 采样出来的 深度值,距离光源 越近越接近1,越远越接近0
+  float shadowMapDepth = unpack(texture2D(shadowMap,shadowCoord.xy));
+  float curDepth = shadowCoord.z;
+
+  vec3 lightDir = normalize(uLightPos);
+  vec3 normal = normalize(vNormal);
+  float baseBias = 0.06;
+  float minBias = 0.05;
+  float bias = max(baseBias * (1.0 - dot(normal,lightDir)),minBias);
+
+  return curDepth - bias > shadowMapDepth ? 0.0 : 1.0;
 }
 
 vec3 blinnPhong() {
@@ -135,10 +153,13 @@ vec3 blinnPhong() {
   return phongColor;
 }
 
-void main(void) {
+void main(void) 
+{
 
-  vec3 shadowCoord = vPositionFromLight.xyz / vPositionFromLight.w; // remap [-w,+w] to [-1,+1]
-  shadowCoord.xyz = shadowCoord.xyz * 0.5 + 0.5;    // remap [-1,1] to [0,1]
+  vec4 positionFromLight = vPositionFromLight;
+//  positionFromLight.y = positionFromLight.y - 0.01;
+  vec3 shadowCoord = positionFromLight.xyz / positionFromLight.w; // remap [-w,+w] to [-1,+1]
+  shadowCoord.xyz = (shadowCoord.xyz + 1.0) * 0.5;    // remap [-1,1] to [0,1]
 
   float visibility = 1.0;
   visibility = useShadowMap(uShadowMap, vec4(shadowCoord, 1.0));
@@ -149,4 +170,8 @@ void main(void) {
 
   gl_FragColor = vec4(phongColor * visibility, 1.0);
   //gl_FragColor = vec4(phongColor, 1.0);
+
+
+//  vec4 test = texture2D(uShadowMap,vTextureCoord);
+//  gl_FragColor = test;
 }

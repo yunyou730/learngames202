@@ -179,6 +179,7 @@ class MeshRender {
 		gl.bindFramebuffer(gl.FRAMEBUFFER, this.material.frameBuffer);
 		if (this.material.frameBuffer != null) {
 			// Shadow map
+			// size is resolution x resolution,defined in engine.js
 			gl.viewport(0.0, 0.0, resolution, resolution);
 		} else {
 			gl.viewport(0.0, 0.0, window.screen.width, window.screen.height);
