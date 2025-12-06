@@ -10,6 +10,8 @@ uniform vec3 uLightPos;
 uniform vec3 uCameraPos;
 uniform vec3 uLightIntensity;
 
+uniform float uReceiveShadow;
+
 varying highp vec2 vTextureCoord;
 varying highp vec3 vFragPos;
 varying highp vec3 vNormal;
@@ -166,7 +168,10 @@ void main(void)
   // //visibility = PCF(uShadowMap, vec4(shadowCoord, 1.0));
   // //visibility = PCSS(uShadowMap, vec4(shadowCoord, 1.0));
 
-   vec3 phongColor = blinnPhong();
+  vec3 phongColor = blinnPhong();
+
+  visibility = mix(1.0,visibility,uReceiveShadow);
+
 
   gl_FragColor = vec4(phongColor * visibility, 1.0);
   //gl_FragColor = vec4(phongColor, 1.0);

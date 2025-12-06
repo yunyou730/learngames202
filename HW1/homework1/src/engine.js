@@ -60,9 +60,9 @@ function GAMES202Main() {
 	// loadOBJ(1,renderer, 'assets/mary/', 'Marry', 'PhongMaterial', obj2Transform);
 	// loadOBJ(2,renderer, 'assets/floor/', 'floor', 'PhongMaterial', floorTransform);
 
-	new ObjectLoader(0).load(renderer,"assets/mary/","Marry","PhongMaterial",obj1Transform);
-	new ObjectLoader(1).load(renderer,"assets/mary/","Marry","PhongMaterial",obj2Transform);
-	new ObjectLoader(2).load(renderer,"assets/floor/","floor","PhongMaterial",floorTransform);
+	new ObjectLoader(0,false).load(renderer,"assets/mary/","Marry","PhongMaterial",obj1Transform);
+	new ObjectLoader(1,false).load(renderer,"assets/mary/","Marry","PhongMaterial",obj2Transform);
+	new ObjectLoader(2,true).load(renderer,"assets/floor/","floor","PhongMaterial",floorTransform);
 	// new ObjectLoader(3).load(renderer,"assets/floor/","floor","ShadowMapTestMaterial",floorTransform);
 	
 

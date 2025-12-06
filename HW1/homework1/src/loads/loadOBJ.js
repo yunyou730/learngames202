@@ -1,7 +1,7 @@
 
 class ObjectLoader
 {
-	constructor(id)
+	constructor(id,enableReceiveShadow)
 	{
 		var self = this;
 		this._id = id
@@ -11,6 +11,8 @@ class ObjectLoader
 		this._renderer = null
 		this._mat = null
 		this._transform = null
+
+		this._enableReceiveShadow = enableReceiveShadow
 		
 		this._manager = new THREE.LoadingManager();
 		this._manager.onProgress = function (item, loaded, total) {
@@ -58,6 +60,8 @@ class ObjectLoader
 		var object = this._loadedObj;
 		var objMaterial = this._mat;
 		var transform = this._transform;
+		var enableReceiveShadow = this._enableReceiveShadow;
+
 
 		object.traverse(function (child) {
 				if (child.isMesh) {
@@ -89,8 +93,22 @@ class ObjectLoader
 					let light = renderer.lights[0].entity;
 					switch (objMaterial) {
 						case 'PhongMaterial':
-							material = buildPhongMaterial(colorMap, mat.specular.toArray(), light, Translation, Scale, "./src/shaders/phongShader/phongVertex.glsl", "./src/shaders/phongShader/phongFragment.glsl");
-							shadowMaterial = buildShadowMaterial(light, Translation, Scale, "./src/shaders/shadowShader/shadowVertex.glsl", "./src/shaders/shadowShader/shadowFragment.glsl");
+							material = buildPhongMaterial(
+								colorMap, 
+								mat.specular.toArray(), 
+								light, 
+								Translation, 
+								Scale, 
+								"./src/shaders/phongShader/phongVertex.glsl", 
+								"./src/shaders/phongShader/phongFragment.glsl",
+								enableReceiveShadow
+							);
+							shadowMaterial = buildShadowMaterial(
+								light, 
+								Translation, 
+								Scale, 
+								"./src/shaders/shadowShader/shadowVertex.glsl", 
+								"./src/shaders/shadowShader/shadowFragment.glsl");
 							break;
 						case 'ShadowMapTestMaterial':
 							material = buildPhongMaterial(
@@ -100,7 +118,9 @@ class ObjectLoader
 									Translation, 
 									Scale, 
 									"./src/shaders/phongShader/shadowMapTestVert.glsl", 
-									"./src/shaders/phongShader/shadowMapTestFrag.glsl");
+									"./src/shaders/phongShader/shadowMapTestFrag.glsl",
+									enableReceiveShadow
+								);
 							break;
 					}
 					
