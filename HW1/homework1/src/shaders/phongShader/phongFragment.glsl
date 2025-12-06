@@ -125,8 +125,8 @@ float useShadowMap(sampler2D shadowMap, vec4 shadowCoord){
 
   vec3 lightDir = normalize(uLightPos);
   vec3 normal = normalize(vNormal);
-  float baseBias = 0.06;
-  float minBias = 0.05;
+  float baseBias = 0.01;
+  float minBias = 0.01;
   float bias = max(baseBias * (1.0 - dot(normal,lightDir)),minBias);
 
   return curDepth - bias > shadowMapDepth ? 0.0 : 1.0;
